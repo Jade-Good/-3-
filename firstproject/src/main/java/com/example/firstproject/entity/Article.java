@@ -5,10 +5,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity // 엔티티 선언
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 public class Article {
     @Id // 엔티티의 대푯값 지정
@@ -18,8 +20,4 @@ public class Article {
     private String title;
     @Column // content 필드 선언. DB 테이블의 content 열과 연결
     private String content;
-
-    public Article() {
-
-    }
 }
