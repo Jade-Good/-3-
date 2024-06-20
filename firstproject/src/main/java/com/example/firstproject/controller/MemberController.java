@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @Slf4j
@@ -69,12 +70,23 @@ public class MemberController {
     public String edit(MemberForm form) {
         Member memberEntity = form.toEntity();
 
-        Member target = memberRepository.findById(memberEntity.getId()).orElse(null);
-
-        if (target != null) {
-            memberRepository.save(memberEntity);
-        }
+        memberRepository.findById(memberEntity.getId()).ifPresent(target -> memberRepository.save(memberEntity));
 
         return "redirect:/members/" + memberEntity.getId();
+    }
+
+    @GetMapping("/members/{id}/delete")
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        log.info("사용자 정보 삭제 요청 들어옴!!");
+        memberRepository.findById(id).ifPresent(memberEntity->{
+            memberRepository.delete(memberEntity);
+            redirectAttributes.addFlashAttribute("msg", memberEntity.getEmail()+"의 정보가 삭제되었습니다.");
+        });
+//        Member memberEntity = memberRepository.findById(id).orElse(null);
+//        if (memberEntity != null) {
+//            memberRepository.delete(memberEntity);
+//            redirectAttributes.addFlashAttribute("msg", memberEntity.getEmail()+"의 정보가 삭제되었습니다.");
+//        }
+        return "redirect:/members";
     }
 }
